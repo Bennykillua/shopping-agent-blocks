@@ -3,7 +3,9 @@
 # Text that only appears on challenge pages
 CHALLENGE = ["access to this page has been denied", "verify you are human", "press & hold",
              "cf-chl", "enter the characters you see below", "captcha"]
-CHALLENGE_PAGE_MAX = 100_000  # challenge pages in the test were under 10 KB
+# Challenge pages in the test were under 10 KB and full product pages over 1 MB,
+# so 100 KB leaves room on both sides
+CHALLENGE_PAGE_MAX = 100_000  
 POLICY = ["unauthorized ai agent", "unauthorized agent"]
 
 def classify(status, body, price, baseline_len, retry_after=None, tool_error=False):
