@@ -4,4 +4,5 @@ python-dotenv
 curl_cffi
 playwright
 pytest
+uv
 mcp>=2,<3
