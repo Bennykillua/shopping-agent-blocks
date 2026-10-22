@@ -1,11 +1,18 @@
 # classify.py
-CHALLENGE = ["captcha", "verify you are human", "press & hold", "px-captcha", "cf-chl",
-             "enter the characters you see below"]
+
+# Text that only appears on challenge pages
+CHALLENGE = ["access to this page has been denied", "verify you are human", "press & hold",
+             "cf-chl", "enter the characters you see below", "captcha"]
+CHALLENGE_PAGE_MAX = 100_000  # challenge pages in the test were under 10 KB
 POLICY = ["unauthorized ai agent", "unauthorized agent"]
 
 def classify(status, body, price, baseline_len, retry_after=None, tool_error=False):
     text = body.lower()
-    hit = next((m for m in CHALLENGE if m in text), None)
+    # Full product pages load anti-bot scripts that contain challenge text,
+    # so a marker only counts on a page small enough to be a challenge page
+    hit = None
+    if len(body) < CHALLENGE_PAGE_MAX:
+        hit = next((m for m in CHALLENGE if m in text), None)
 
     if status == 429 or (status == 503 and retry_after):
         if hit:
@@ -22,6 +29,8 @@ def classify(status, body, price, baseline_len, retry_after=None, tool_error=Fal
         return "success", f"price={price}"
     if hit:
         return "challenge", f"marker={hit}"
+    if status in (404, 410):
+        return "not_found", f"status={status}: page doesn't exist, don't retry"
     if status is None or status >= 400:
         return "blocked", f"status={status}, cause unknown"
     if len(body) < 0.2 * baseline_len:

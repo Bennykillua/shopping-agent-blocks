@@ -43,3 +43,6 @@ def test_refused_robots_txt_is_not_policy():
     msg = ("When fetching robots.txt (https://www.sephora.com/robots.txt), received status 403 "
            "so assuming that autonomous fetching is not allowed")
     assert classify(None, msg, None, 50_000, tool_error=True)[0] == "blocked"
+
+def test_plain_404_is_not_found():
+    assert classify(404, "<h1>Page not found</h1>", None, 50_000)[0] == "not_found"

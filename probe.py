@@ -14,8 +14,9 @@ def check_exit_ip():
         raise SystemExit("Run this from a US IP. See Prerequisites.")
     return {"exit_country": ip.get("country"), "exit_org": ip.get("org")}
 
+FIXED_PRICE = re.compile(r'FixedPrice.{0,80}?amount\\?"\s*:\s*\\?"(\d{1,6}(?:\.\d{2})?)')
 PRICE_IN_JSON = re.compile(
-    r'"(?:price|salePrice|currentPrice|finalPrice)"\s*:\s*"?\$?(\d{1,6}(?:\.\d{2})?)"?'
+    r'\\?"(?:price|salePrice|currentPrice|finalPrice)\\?"\s*:\s*\\?"?\$?(\d{1,6}(?:\.\d{2})?)'
 )
 
 def find_price(html):
@@ -36,9 +37,12 @@ def find_price(html):
             or soup.find("meta", attrs={"property": "product:price:amount"}))
     if meta and meta.get("content"):
         return meta["content"]
-    # 3. Price inside the page's embedded JSON (last resort; verify per retailer)
-    m = PRICE_IN_JSON.search(html)
-    return m.group(1) if m else None
+    # 3. Embedded app data: a fixed price object (Wayfair), then common price keys
+    for pattern in (FIXED_PRICE, PRICE_IN_JSON):
+        m = pattern.search(html)
+        if m:
+            return m.group(1)
+    return None
 
 def log(retailer, url, route, status, body, **extra):
     path = OUT / f"{retailer}_{route}_{abs(hash(url)) % 10**6}.html"
