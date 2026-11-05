@@ -199,4 +199,4 @@ Each script also prints a summary table to the terminal: the label per response,
 
 This repository accompanies the Zenrows article:
 
-[Why Your AI Shopping Agent Gets Blocked on Retail Sites (and How to Fix It)]()
+[Why Your AI Shopping Agent Gets Blocked on Retail Sites (and How to Fix It)](https://www.zenrows.com/blog/why-your-ai-shopping-agent-gets-blocked-on-retail-sites-and-how-to-fix-it)
