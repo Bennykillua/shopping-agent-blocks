@@ -195,6 +195,10 @@ Each script also prints a summary table to the terminal: the label per response,
 - **A page loads in your browser but the classifier says `empty_data`.** The price is probably in markup `find_price` doesn't read yet. Search the saved page for the price and add a pattern for it.
 - **A product page returns `not_found`.** The product was removed. Replace the URL in `urls.csv`.
 
+## License
+
+MIT. See [LICENSE](LICENSE).
+
 ## Related article
 
 This repository accompanies the Zenrows article:
